@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Dog Wash — Suds Come To You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --foam:#F6FBFE;
+  --foam-2:#EAF6FC;
+  --sky:#1C9FDB;
+  --sky-2:#5BC5EE;
+  --deep:#0A3A57;
+  --deep-2:#0E4E75;
+  --gold:#F0A75B;
+  --gold-2:#F7C489;
+  --mint:#BFF2E3;
+  --ink:#0A3A57;
+  --white:#FFFFFF;
+  --shadow-sky: rgba(28,159,219,0.28);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --ease: cubic-bezier(.16,.84,.32,1);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:var(--foam);
+  color:var(--deep);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  letter-spacing:-0.01em;
+  margin:0;
+}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--sky);
+  font-weight:600;
+}
+p{line-height:1.65; color:#3C6079; margin:0;}
+a{text-decoration:none; color:inherit;}
+img,svg{display:block;}
+.container{max-width:1180px; margin:0 auto; padding:0 28px;}
+::selection{background:var(--gold-2); color:var(--deep);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+}
+
+/* ---------- Background ambience ---------- */
+.bg-noise{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(1200px 600px at 15% -10%, rgba(91,197,238,0.25), transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, rgba(240,167,91,0.10), transparent 55%),
+    var(--foam);
+}
+
+/* ---------- Nav ---------- */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:18px 0;
+  transition:background .4s var(--ease), box-shadow .4s var(--ease), padding .3s var(--ease);
+}
+nav.scrolled{
+  background:rgba(246,251,254,0.78);
+  backdrop-filter:blur(16px) saturate(160%);
+  -webkit-backdrop-filter:blur(16px) saturate(160%);
+  box-shadow:0 8px 30px rgba(10,58,87,0.08);
+  padding:10px 0;
+}
+.nav-inner{display:flex; align-items:center; justify-content:space-between;}
+.brand{display:flex; align-items:center; gap:10px; font-family:'Fraunces',serif; font-weight:700; font-size:1.18rem; color:var(--deep);}
+.brand-mark{width:38px; height:38px;}
+.nav-links{display:flex; gap:34px; align-items:center;}
+.nav-links a{font-size:.92rem; font-weight:600; color:var(--deep-2); position:relative; padding:4px 0;}
+.nav-links a::after{content:'';position:absolute; left:0; bottom:-2px; width:0; height:2px; background:var(--gold); transition:width .3s var(--ease);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  display:flex; align-items:center; gap:14px;
+}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 22px; border-radius:999px;
+  font-weight:700; font-size:.92rem; cursor:pointer; border:none;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+  will-change:transform;
+}
+.btn-primary{
+  background:linear-gradient(135deg, var(--gold), #E9924A);
+  color:#3A2107;
+  box-shadow:0 10px 24px rgba(240,167,91,0.45), inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn-primary:hover{transform:translateY(-3px) scale(1.02); box-shadow:0 16px 32px rgba(240,167,91,0.55);}
+.btn-ghost{
+  background:rgba(255,255,255,0.6);
+  color:var(--deep);
+  border:1.5px solid rgba(10,58,87,0.15);
+}
+.btn-ghost:hover{transform:translateY(-3px); border-color:var(--sky);}
+.phone-pill{font-family:'JetBrains Mono',monospace; font-size:.85rem; font-weight:600; color:var(--deep-2);}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative; padding:170px 0 120px;
+  min-height:100vh; display:flex; align-items:center;
+  perspective:1400px;
+}
+.hero-grid{
+  display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center;
+}
+.hero-copy .eyebrow{margin-bottom:18px; display:inline-block;}
+.hero h1{
+  font-size:clamp(2.6rem, 5.2vw, 4.4rem);
+  line-height:1.02;
+  color:var(--deep);
+}
+.hero h1 em{
+  font-style:normal; color:var(--sky);
+  background:linear-gradient(180deg, transparent 62%, var(--mint) 62%);
+}
+.hero p.lead{
+  margin-top:24px; font-size:1.14rem; max-width:480px;
+}
+.hero-actions{display:flex; gap:16px; margin-top:38px; flex-wrap:wrap;}
+.hero-stats{display:flex; gap:38px; margin-top:56px;}
+.stat b{
+  font-family:'Fraunces',serif; font-size:1.9rem; color:var(--deep); display:block; font-weight:700;
+}
+.stat span{font-size:.8rem; color:#5A7E93;}
+
+/* ---- 3D Bubble cluster signature ---- */
+.hero-visual{
+  position:relative; height:520px;
+  transform-style:preserve-3d;
+}
+.bubble-stage{
+  position:absolute; inset:0;
+  transform-style:preserve-3d;
+  transition:transform .2s ease-out;
+}
+.bubble{
+  position:absolute; border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,.95), rgba(255,255,255,.15) 32%, rgba(91,197,238,.55) 62%, rgba(28,159,219,.75) 100%);
+  box-shadow:
+    inset -8px -12px 24px rgba(10,58,87,0.25),
+    inset 8px 10px 18px rgba(255,255,255,0.6),
+    0 30px 60px rgba(28,159,219,0.28);
+  animation:float 7s ease-in-out infinite;
+}
+.bubble::after{
+  content:'';position:absolute; top:14%; left:20%; width:26%; height:16%;
+  background:rgba(255,255,255,0.85); border-radius:50%; filter:blur(2px);
+}
+.b1{width:280px; height:280px; top:60px; left:110px; animation-delay:0s;}
+.b2{width:140px; height:140px; top:20px; left:340px; animation-delay:1.2s;}
+.b3{width:96px; height:96px; top:290px; left:40px; animation-delay:.6s;}
+.b4{width:64px; height:64px; top:360px; left:330px; animation-delay:2s;}
+.b5{width:44px; height:44px; top:210px; left:300px; animation-delay:1.6s;}
+@keyframes float{
+  0%,100%{transform:translateY(0) translateZ(0) rotate(0deg);}
+  50%{transform:translateY(-22px) translateZ(30px) rotate(4deg);}
+}
+.splash-ring{
+  position:absolute; left:50%; top:52%; width:360px; height:360px;
+  transform:translate(-50%,-50%);
+  border-radius:50%; border:2px solid rgba(28,159,219,.35);
+  animation:ring 3.2s var(--ease) infinite;
+}
+.splash-ring.r2{animation-delay:1.1s; border-color:rgba(240,167,91,.3);}
+@keyframes ring{
+  0%{transform:translate(-50%,-50%) scale(.6); opacity:.9;}
+  100%{transform:translate(-50%,-50%) scale(1.25); opacity:0;}
+}
+.paw-drift{position:absolute; opacity:.5; animation:drift linear infinite;}
+@keyframes drift{
+  0%{transform:translateY(20px) rotate(0deg); opacity:0;}
+  15%{opacity:.55;}
+  100%{transform:translateY(-460px) rotate(40deg); opacity:0;}
+}
+
+/* wave divider */
+.wave-divider{position:relative; line-height:0; margin-top:-6px;}
+.wave-divider svg{width:100%; height:auto;}
+.wave-back{animation:waveShift 14s linear infinite; }
+.wave-front{animation:waveShift 9s linear infinite reverse;}
+@keyframes waveShift{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-200px);}
+}
+
+/* ---------- Section shared ---------- */
+section{position:relative; padding:110px 0; z-index:1;}
+.section-head{max-width:640px; margin:0 auto 60px; text-align:center;}
+.section-head h2{font-size:clamp(2rem,3.4vw,2.9rem); margin-top:14px;}
+.section-head p{margin-top:16px; font-size:1.05rem;}
+.reveal{opacity:0; transform:translateY(36px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
+.reveal.in-view{opacity:1; transform:translateY(0);}
+
+/* ---------- Trust bar ---------- */
+.trust-bar{background:var(--deep); padding:26px 0;}
+.trust-inner{display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px;}
+.trust-item{display:flex; align-items:center; gap:12px; color:var(--foam);}
+.trust-item b{font-family:'Fraunces',serif; font-size:1.3rem; color:var(--gold-2);}
+.trust-item span{font-size:.8rem; color:#9FC3D6; display:block;}
+
+/* ---------- Services (3D tilt cards) ---------- */
+.services-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:26px; perspective:1600px;
+}
+.tilt-card{
+  background:var(--white);
+  border-radius:var(--radius-lg);
+  padding:34px 28px;
+  border:1px solid rgba(10,58,87,0.06);
+  box-shadow:0 20px 40px rgba(10,58,87,0.06);
+  transform-style:preserve-3d;
+  transition:transform .12s linear, box-shadow .3s var(--ease);
+  position:relative; overflow:hidden;
+}
+.tilt-card:hover{box-shadow:0 30px 60px rgba(28,159,219,0.22);}
+.tilt-card .icon-wrap{
+  width:64px; height:64px; border-radius:18px;
+  background:linear-gradient(135deg,var(--sky-2),var(--sky));
+  display:flex; align-items:center; justify-content:center;
+  margin-bottom:22px; transform:translateZ(40px);
+  box-shadow:0 14px 26px rgba(28,159,219,0.35);
+}
+.tilt-card h3{font-size:1.24rem; transform:translateZ(30px); margin-bottom:10px;}
+.tilt-card p{transform:translateZ(20px); font-size:.95rem;}
+.tilt-card .card-glow{
+  position:absolute; inset:0; border-radius:inherit; opacity:0; pointer-events:none;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(28,159,219,0.14), transparent 60%);
+  transition:opacity .3s;
+}
+.tilt-card:hover .card-glow{opacity:1;}
+
+/* ---------- How it works ---------- */
+.steps{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:22px; counter-reset:step;
+}
+.step{
+  background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(234,246,252,.9));
+  border-radius:var(--radius-md); padding:30px 24px; position:relative;
+  border:1px solid rgba(28,159,219,0.12);
+}
+.step .num{
+  font-family:'Fraunces',serif; font-weight:700; font-size:2.6rem; color:var(--sky-2);
+  opacity:.55; line-height:1;
+}
+.step h3{margin-top:14px; font-size:1.08rem;}
+.step p{margin-top:8px; font-size:.9rem;}
+.step:not(:last-child)::after{
+  content:'';position:absolute; top:50%; right:-22px; width:22px; height:2px; background:rgba(28,159,219,.35);
+}
+@media (max-width:900px){.step:not(:last-child)::after{display:none;}}
+
+/* ---------- Why us (flip cards) ---------- */
+.why-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px;}
+.flip-card{perspective:1200px; height:220px;}
+.flip-inner{
+  position:relative; width:100%; height:100%; text-align:center;
+  transform-style:preserve-3d; transition:transform .7s var(--ease);
+  border-radius:var(--radius-md);
+}
+.flip-card:hover .flip-inner{transform:rotateY(180deg);}
+.flip-front,.flip-back{
+  position:absolute; inset:0; backface-visibility:hidden;
+  border-radius:var(--radius-md); padding:26px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+}
+.flip-front{background:var(--white); border:1px solid rgba(10,58,87,.06); box-shadow:0 16px 34px rgba(10,58,87,.06);}
+.flip-back{
+  background:linear-gradient(135deg, var(--sky), var(--deep-2));
+  color:var(--foam); transform:rotateY(180deg);
+}
+.flip-back p{color:#DCEFF9; font-size:.86rem;}
+
+/* ---------- Pricing ---------- */
+.pricing-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px; align-items:stretch;}
+.price-card{
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.6);
+  border-radius:var(--radius-lg);
+  padding:38px 30px;
+  box-shadow:0 24px 50px rgba(10,58,87,0.1);
+  transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+  display:flex; flex-direction:column;
+}
+.price-card:hover{transform:translateY(-12px) rotateX(2deg);}
+.price-card.featured{
+  background:linear-gradient(160deg, var(--deep-2), var(--deep));
+  color:var(--foam); position:relative; transform:scale(1.04);
+  box-shadow:0 30px 60px rgba(10,58,87,0.32);
+}
+.price-card.featured:hover{transform:scale(1.04) translateY(-12px);}
+.price-card.featured p, .price-card.featured .price-note{color:#BFE0F0;}
+.badge{
+  position:absolute; top:-14px; right:28px; background:var(--gold);
+  color:#3A2107; font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:700;
+  padding:6px 14px; border-radius:999px; letter-spacing:.05em;
+}
+.price-card h3{font-size:1.3rem;}
+.price{font-family:'Fraunces',serif; font-size:2.6rem; font-weight:700; margin:16px 0 2px;}
+.price-note{font-size:.82rem; color:#5A7E93; margin-bottom:22px;}
+.price-list{list-style:none; padding:0; margin:0 0 30px; display:flex; flex-direction:column; gap:12px;}
+.price-list li{font-size:.92rem; display:flex; gap:10px; align-items:flex-start;}
+.price-list li svg{flex-shrink:0; margin-top:2px;}
+.price-card .btn{margin-top:auto; justify-content:center;}
+
+/* ---------- Testimonials ---------- */
+.testimonial-track{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+.t-card{
+  background:var(--white); border-radius:var(--radius-md); padding:30px;
+  border:1px solid rgba(10,58,87,.06); box-shadow:0 18px 36px rgba(10,58,87,.06);
+  animation:bob 6s ease-in-out infinite;
+}
+.t-card:nth-child(2){animation-delay:1s;}
+.t-card:nth-child(3){animation-delay:2s;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.stars{color:var(--gold); letter-spacing:2px; margin-bottom:14px; font-size:1rem;}
+.t-name{margin-top:18px; font-weight:700; font-family:'Fraunces',serif; color:var(--deep);}
+.t-role{font-size:.8rem; color:#5A7E93;}
+
+/* ---------- Booking / CTA ---------- */
+.book-wrap{
+  background:linear-gradient(150deg, var(--deep), var(--deep-2) 60%, var(--sky) 130%);
+  border-radius:36px; padding:64px; display:grid; grid-template-columns:1fr 1fr; gap:50px;
+  position:relative; overflow:hidden; color:var(--foam);
+}
+.book-wrap::before{
+  content:''; position:absolute; width:500px; height:500px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.08), transparent 70%);
+  top:-200px; right:-150px;
+}
+.book-copy .eyebrow{color:var(--gold-2);}
+.book-copy h2{color:var(--foam); font-size:clamp(1.9rem,3vw,2.6rem); margin-top:12px;}
+.book-copy p{color:#BFE0F0; margin-top:16px; max-width:420px;}
+.book-copy .hero-stats{margin-top:44px;}
+.book-copy .stat b{color:var(--foam);}
+.book-copy .stat span{color:#9FC3D6;}
+.form-card{
+  background:rgba(255,255,255,0.94); border-radius:var(--radius-lg); padding:32px;
+  box-shadow:0 30px 60px rgba(0,0,0,.25); position:relative; z-index:1;
+}
+.form-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.form-card label{font-size:.78rem; font-weight:700; color:var(--deep-2); display:block; margin-bottom:6px;}
+.form-card input, .form-card select{
+  width:100%; padding:12px 14px; border-radius:12px; border:1.5px solid #DDEBF3;
+  font-family:inherit; font-size:.92rem; color:var(--deep); margin-bottom:16px; background:#FAFEFF;
+  transition:border-color .25s, box-shadow .25s;
+}
+.form-card input:focus, .form-card select:focus{
+  outline:none; border-color:var(--sky); box-shadow:0 0 0 4px rgba(28,159,219,.15);
+}
+.form-card .btn-primary{width:100%; justify-content:center; margin-top:6px;}
+.form-note{font-size:.74rem; color:#7A9BB0; margin-top:12px; text-align:center;}
+.confirm-msg{
+  display:none; text-align:center; padding:30px 10px;
+}
+.confirm-msg.show{display:block;}
+.confirm-msg .icon-wrap{margin:0 auto 16px;}
+
+/* ---------- Footer ---------- */
+footer{background:var(--deep); color:#BFE0F0; padding:70px 0 30px;}
+.footer-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:50px; border-bottom:1px solid rgba(255,255,255,.1);}
+.footer-brand .brand{color:var(--foam);}
+.footer-brand p{color:#9FC3D6; margin-top:14px; max-width:280px; font-size:.9rem;}
+footer h4{font-family:'JetBrains Mono',monospace; font-size:.76rem; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-2); margin-bottom:18px;}
+footer ul{list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:11px;}
+footer a{font-size:.9rem; color:#BFE0F0; transition:color .25s;}
+footer a:hover{color:var(--gold-2);}
+.footer-bottom{display:flex; justify-content:space-between; padding-top:26px; font-size:.8rem; color:#7A9BB0; flex-wrap:wrap; gap:10px;}
+
+/* ---------- Responsive ---------- */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-visual{height:340px; order:-1;}
+  .services-grid, .why-grid, .steps, .pricing-grid, .testimonial-track{grid-template-columns:1fr 1fr;}
+  .book-wrap{grid-template-columns:1fr; padding:40px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .nav-links{display:none;}
+}
+@media (max-width:620px){
+  .services-grid, .why-grid, .steps, .pricing-grid, .testimonial-track{grid-template-columns:1fr;}
+  .price-card.featured{transform:scale(1);}
+  .footer-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+  .hero-stats{flex-wrap:wrap; row-gap:18px;}
+  .trust-inner{justify-content:center; text-align:center;}
+}
+:focus-visible{outline:3px solid var(--gold); outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="bg-noise"></div>
+
+<nav id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="23" fill="#1C9FDB"/>
+        <path d="M24 12c-6 4-10 10-10 16a10 10 0 0020 0c0-6-4-12-10-16z" fill="#fff" opacity=".95"/>
+        <circle cx="20" cy="24" r="2.4" fill="#1C9FDB"/>
+        <circle cx="28" cy="24" r="2.4" fill="#1C9FDB"/>
+      </svg>
+      Mobile Dog Wash
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#book">Book</a>
+    </div>
+    <div class="nav-cta">
+      <span class="phone-pill">📞 (555) 010-0143</span>
+      <a href="#book" class="btn btn-primary">Book a Wash</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container hero-grid">
+    <div class="hero-copy reveal in-view">
+      <span class="eyebrow">Curbside · Large-Breed Specialists</span>
+      <h1>Suds come<br>to <em>your</em> driveway.</h1>
+      <p class="lead">A fully-equipped wash trailer pulls up, we hook up our own water &amp; power, and your dog gets a spa-grade bath, blow-dry, and brush-out — without ever leaving home.</p>
+      <div class="hero-actions">
+        <a href="#book" class="btn btn-primary">Book a Wash <span>→</span></a>
+        <a href="#services" class="btn btn-ghost">See services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>2,400+</b><span>Dogs washed</span></div>
+        <div class="stat"><b>4.9★</b><span>Average rating</span></div>
+        <div class="stat"><b>1 dog</b><span>per visit, always</span></div>
+      </div>
+    </div>
+
+    <div class="hero-visual" id="heroVisual">
+      <div class="splash-ring"></div>
+      <div class="splash-ring r2"></div>
+      <div class="bubble-stage" id="bubbleStage">
+        <div class="bubble b1"></div>
+        <div class="bubble b2"></div>
+        <div class="bubble b3"></div>
+        <div class="bubble b4"></div>
+        <div class="bubble b5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none" style="display:block;">
+      <path class="wave-back" d="M0,60 C200,110 400,10 720,60 C1040,110 1240,10 1440,60 L1440,120 L0,120 Z" fill="#EAF6FC"/>
+      <path class="wave-front" d="M0,80 C220,30 420,120 720,70 C1020,20 1220,110 1440,70 L1440,120 L0,120 Z" fill="#F6FBFE"/>
+    </svg>
+  </div>
+</header>
+
+<section class="trust-bar">
+  <div class="container trust-inner">
+    <div class="trust-item"><b>0</b><span>Cages or crates on board</span></div>
+    <div class="trust-item"><b>100%</b><span>Own water tank &amp; power</span></div>
+    <div class="trust-item"><b>Large</b><span>Breeds our specialty</span></div>
+    <div class="trust-item"><b>7 days</b><span>Booking availability</span></div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Services</span>
+      <h2>Every visit, top to tail.</h2>
+      <p>Pick a single service or bundle the full spa treatment — everything happens curbside, in view, in one visit.</p>
+    </div>
+    <div class="services-grid">
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3c-3 3-6 6.5-6 10a6 6 0 0012 0c0-3.5-3-7-6-10z" fill="#fff"/></svg>
+        </div>
+        <h3>Warm Wash &amp; Rinse</h3>
+        <p>Dermatologist-tested shampoo, hand-massaged in, then rinsed with continuously heated water.</p>
+      </div>
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M4 12c4-6 12-6 16 0M6 16c3-4 9-4 12 0" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Blow-Dry &amp; Brush-Out</h3>
+        <p>High-velocity dryer plus de-shedding brush to cut loose fur and leave the coat soft.</p>
+      </div>
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" fill="#fff"/><circle cx="6" cy="8" r="2" fill="#fff"/><circle cx="18" cy="8" r="2" fill="#fff"/><circle cx="7" cy="16" r="2" fill="#fff"/><circle cx="17" cy="16" r="2" fill="#fff"/></svg>
+        </div>
+        <h3>Nail Trim &amp; Paw Care</h3>
+        <p>Gentle nail trimming and paw-pad conditioning, done calmly with plenty of breaks.</p>
+      </div>
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>De-Shed Treatment</h3>
+        <p>Deep-coat shed control for double-coated breeds — a favorite before shedding season.</p>
+      </div>
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Flea &amp; Tick Treatment</h3>
+        <p>Vet-approved treatment applied after the wash, with a full rinse-through check.</p>
+      </div>
+      <div class="tilt-card reveal">
+        <div class="card-glow"></div>
+        <div class="icon-wrap">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 4.6L19 9l-3.5 3.4L16.4 17 12 14.6 7.6 17l.9-4.6L5 9l4.8-1.4L12 3z" fill="#fff"/></svg>
+        </div>
+        <h3>Large-Breed Add-On</h3>
+        <p>Extra time, extra towels, extra patience — built specifically for 70lb+ dogs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background:var(--foam-2);">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">How it works</span>
+      <h2>Four steps. Zero mess in your house.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="num">01</div><h3>Book your slot</h3><p>Pick a time online or call — tell us your dog's size and any coat concerns.</p></div>
+      <div class="step reveal"><div class="num">02</div><h3>We roll up</h3><p>Our trailer parks curbside with its own water tank, heater, and generator.</p></div>
+      <div class="step reveal"><div class="num">03</div><h3>Splish, splash</h3><p>Wash, dry, brush-out, nails — all in the trailer, all visible from your porch.</p></div>
+      <div class="step reveal"><div class="num">04</div><h3>One happy pup</h3><p>We towel off, you pay by card or tap, and your dog struts back inside.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why mobile</span>
+      <h2>Built for dogs who hate the car ride.</h2>
+    </div>
+    <div class="why-grid">
+      <div class="flip-card reveal">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M3 12l2-6h14l2 6M5 12v6h14v-6M5 12h14" stroke="#1C9FDB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h3 style="font-size:1.05rem;">No car rides</h3>
+          </div>
+          <div class="flip-back"><p>Anxious in cars? Skip it — we come to your curb, so the only trip your dog takes is out the front door.</p></div>
+        </div>
+      </div>
+      <div class="flip-card reveal">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1C9FDB" stroke-width="2"/><path d="M12 7v5l4 2" stroke="#1C9FDB" stroke-width="2" stroke-linecap="round"/></svg>
+            <h3 style="font-size:1.05rem;">One dog at a time</h3>
+          </div>
+          <div class="flip-back"><p>No shared tubs, no waiting cages. Every trailer is fully cleaned between every single appointment.</p></div>
+        </div>
+      </div>
+      <div class="flip-card reveal">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M4 12c4-6 12-6 16 0" stroke="#1C9FDB" stroke-width="2" stroke-linecap="round"/><path d="M4 12c4 6 12 6 16 0" stroke="#1C9FDB" stroke-width="2" stroke-linecap="round"/></svg>
+            <h3 style="font-size:1.05rem;">Own water &amp; power</h3>
+          </div>
+          <div class="flip-back"><p>Nothing plugged into your house — our trailer carries its own heated water and generator.</p></div>
+        </div>
+      </div>
+      <div class="flip-card reveal">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.2 4.6L19 9l-3.5 3.4L16.4 17 12 14.6 7.6 17l.9-4.6L5 9l4.8-1.4L12 3z" stroke="#1C9FDB" stroke-width="2" stroke-linejoin="round"/></svg>
+            <h3 style="font-size:1.05rem;">Large-breed built</h3>
+          </div>
+          <div class="flip-back"><p>Ramps, wide tubs, and handlers experienced with big, strong, sometimes-nervous dogs.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" style="background:var(--foam-2);">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>Simple pricing, by size.</h2>
+      <p>Every tier includes wash, rinse, blow-dry and a brush-out. Add nail trims or treatments at booking.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <h3>Small Breed</h3>
+        <div class="price">$45</div>
+        <div class="price-note">Under 25 lbs</div>
+        <ul class="price-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Wash, rinse &amp; blow-dry</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Brush-out</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Ear wipe &amp; cologne spritz</li>
+        </ul>
+        <a href="#book" class="btn btn-ghost">Book this</a>
+      </div>
+      <div class="price-card featured reveal">
+        <span class="badge">Large-Breed Specialist</span>
+        <h3>Large Breed</h3>
+        <div class="price">$75</div>
+        <div class="price-note">70 lbs and up</div>
+        <ul class="price-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#F0A75B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Everything in Small, sized up</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#F0A75B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Wide-body tub &amp; ramp</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#F0A75B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>De-shed treatment included</li>
+        </ul>
+        <a href="#book" class="btn btn-primary">Book this</a>
+      </div>
+      <div class="price-card reveal">
+        <h3>Medium Breed</h3>
+        <div class="price">$58</div>
+        <div class="price-note">25–70 lbs</div>
+        <ul class="price-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Wash, rinse &amp; blow-dry</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Brush-out &amp; nail trim</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#1C9FDB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Ear wipe &amp; cologne spritz</li>
+        </ul>
+        <a href="#book" class="btn btn-ghost">Book this</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Reviews</span>
+      <h2>What the neighborhood says.</h2>
+    </div>
+    <div class="testimonial-track">
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"They handled our 95lb Rottweiler like it was nothing. He actually runs to the trailer now."</p>
+        <div class="t-name">Sam R.</div><div class="t-role">Rottweiler owner</div>
+      </div>
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"No more wet dog smell in my bathroom. They're in and out in under an hour, driveway spotless after."</p>
+        <div class="t-name">Priya K.</div><div class="t-role">Golden Retriever owner</div>
+      </div>
+      <div class="t-card reveal">
+        <div class="stars">★★★★★</div>
+        <p>"Booking took two minutes and they texted when they were five out. Easiest part of my week."</p>
+        <div class="t-name">Marcus D.</div><div class="t-role">Husky owner</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="book" style="padding-top:0;">
+  <div class="container">
+    <div class="book-wrap reveal">
+      <div class="book-copy">
+        <span class="eyebrow">Book a wash</span>
+        <h2>Reserve your curb time.</h2>
+        <p>Tell us about your dog and pick a window — we'll confirm by text or call within a few hours.</p>
+        <div class="hero-stats">
+          <div class="stat"><b>&lt; 1hr</b><span>Typical visit</span></div>
+          <div class="stat"><b>Same-week</b><span>Slots usually open</span></div>
+        </div>
+      </div>
+      <div class="form-card">
+        <form id="bookingForm">
+          <div class="form-row">
+            <div><label for="name">Your name</label><input id="name" type="text" placeholder="Jane Smith" required></div>
+            <div><label for="phone">Phone</label><input id="phone" type="tel" placeholder="(555) 010-0143" required></div>
+          </div>
+          <label for="address">Address / ZIP</label>
+          <input id="address" type="text" placeholder="Street or ZIP code" required>
+          <div class="form-row">
+            <div><label for="size">Dog size</label>
+              <select id="size">
+                <option>Small (under 25 lbs)</option>
+                <option>Medium (25–70 lbs)</option>
+                <option selected>Large (70 lbs+)</option>
+              </select>
+            </div>
+            <div><label for="date">Preferred date</label><input id="date" type="date"></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Request Booking</button>
+          <div class="form-note">No payment now — we confirm availability first.</div>
+        </form>
+        <div class="confirm-msg" id="confirmMsg">
+          <div class="icon-wrap" style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--sky-2),var(--sky));display:flex;align-items:center;justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3 style="margin-top:6px;">Request received</h3>
+          <p style="margin-top:8px;">We'll text you shortly to confirm your slot.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="brand">
+          <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="23" fill="#1C9FDB"/>
+            <path d="M24 12c-6 4-10 10-10 16a10 10 0 0020 0c0-6-4-12-10-16z" fill="#fff" opacity=".95"/>
+            <circle cx="20" cy="24" r="2.4" fill="#1C9FDB"/><circle cx="28" cy="24" r="2.4" fill="#1C9FDB"/>
+          </svg>
+          Mobile Dog Wash
+        </a>
+        <p>Curbside dog washing, specializing in large breeds. We bring the tub, water, and towels to you.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul><li><a href="#services">Services</a></li><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#reviews">Reviews</a></li></ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul><li><a href="tel:+15550100143">(555) 010-0143</a></li><li><a href="mailto:hello@mobiledogwash.example">hello@mobiledogwash.example</a></li><li><a href="#">Facebook</a></li></ul>
+      </div>
+      <div>
+        <h4>Hours</h4>
+        <ul><li>Mon–Sat: 8am–6pm</li><li>Sunday: By request</li></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Mobile Dog Wash. All rights reserved.</span>
+      <span>Curbside · Large-breed specialists</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll state
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Reveal on scroll
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.15 });
+revealEls.forEach(el => io.observe(el));
+
+// Hero bubble parallax on mouse
+const heroVisual = document.getElementById('heroVisual');
+const bubbleStage = document.getElementById('bubbleStage');
+if (heroVisual && window.matchMedia('(pointer:fine)').matches) {
+  heroVisual.addEventListener('mousemove', (e) => {
+    const rect = heroVisual.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    bubbleStage.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 18}deg) translateZ(20px)`;
+  });
+  heroVisual.addEventListener('mouseleave', () => {
+    bubbleStage.style.transform = 'rotateY(0) rotateX(0) translateZ(0)';
+  });
+}
+
+// Tilt cards
+document.querySelectorAll('.tilt-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    const rx = (0.5 - y) * 14;
+    const ry = (x - 0.5) * 14;
+    card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    card.style.setProperty('--mx', `${x * 100}%`);
+    card.style.setProperty('--my', `${y * 100}%`);
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(900px) rotateX(0) rotateY(0) translateY(0)';
+  });
+});
+
+// Floating paw prints in hero
+const pawSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#1C9FDB"><circle cx="12" cy="15" r="4.2"/><circle cx="5" cy="10" r="2"/><circle cx="19" cy="10" r="2"/><circle cx="8" cy="5.5" r="1.8"/><circle cx="16" cy="5.5" r="1.8"/></svg>`;
+for (let i = 0; i < 6; i++) {
+  const p = document.createElement('div');
+  p.className = 'paw-drift';
+  p.innerHTML = pawSVG;
+  p.style.left = (10 + Math.random() * 80) + '%';
+  p.style.bottom = '0px';
+  p.style.animationDuration = (6 + Math.random() * 6) + 's';
+  p.style.animationDelay = (Math.random() * 6) + 's';
+  heroVisual.appendChild(p);
+}
+
+// Booking form (front-end only demo)
+const bookingForm = document.getElementById('bookingForm');
+const confirmMsg = document.getElementById('confirmMsg');
+bookingForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  bookingForm.style.display = 'none';
+  confirmMsg.classList.add('show');
+});
+</script>
+
+</body>
+</html>
